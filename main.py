@@ -1,5 +1,6 @@
 import pymysql
 import pandas as pd
+import os
 
 conn = pymysql.connect(host='localhost', user='root',
                        password='0000', db='imdb')  # DB 연결
@@ -17,7 +18,8 @@ while (menu != 0):
         sql = "select titleType, primaryTitle, primaryName,startYear from movie join directors on movie.tconst = directors.tconst join person on directors.director = person.nconst where primaryTitle = '%s';" % movieName
         curs.execute(sql)
         row = curs.fetchall()
-        print("[제목이 %s인 영화목록]" % movieName)
+        os.system('cls')
+        print("\n[제목이 %s인 영화목록]" % movieName)
         df = pd.DataFrame(row)
         print(df)
     elif (menu == 2):
@@ -31,7 +33,8 @@ while (menu != 0):
             and primaryName='%s' order by averageRating desc;""" % actorName
         curs.execute(sql)
         row = curs.fetchall()
-        print("[%s가 출연한 영화목록]" % actorName)
+        os.system('cls')
+        print("\n[%s가 출연한 영화목록]" % actorName)
         df = pd.DataFrame(row)
         print(df)
     elif (menu == 3):
@@ -40,10 +43,11 @@ while (menu != 0):
         sql = """select primaryTitle,startYear from movie join directors on movie.tconst = directors.tconst 
             join person on directors.director = person.nconst
             join ratings on movie.tconst = ratings.tconst
-            where primaryName='%s' order by startYear desc;""" % directorName
+            where primaryName = '%s' order by startYear desc;""" % directorName
         curs.execute(sql)
         row = curs.fetchall()
-        print("[%s가 제작한 영화목록]" % directorName)
+        os.system('cls')
+        print("\n[%s가 제작한 영화목록]" % directorName)
         df = pd.DataFrame(row)
         print(df)
     elif (menu == 4):
@@ -54,12 +58,13 @@ while (menu != 0):
         if int(input("[1] 리뷰많은순 [2] 별점높은순 : ")) == 1:
             ror = "numVotes"
         myLimit = input("검색 개수를 선택하세요 (큰 수를 입력할 수록 시간이 소요됨) : ")
-        sql = """select primaryTitle,averageRating,numVotes from movie join genres on movie.tconst = genres.tconst 
+        sql = """select primaryTitle,averageRating,numVotes,genre from movie join genres on movie.tconst = genres.tconst 
             join ratings on movie.tconst = ratings.tconst 
             where genre = '%s' order by %s desc limit %s;""" % (myGenre, ror, myLimit)
         curs.execute(sql)
         row = curs.fetchall()
-        print("[장르 : %s]" % myGenre)
+        os.system('cls')
+        print("\n[장르 : %s]" % myGenre)
         df = pd.DataFrame(row)
         print(df)
     elif (menu == 5):
@@ -67,10 +72,11 @@ while (menu != 0):
         writerName = input("작가 이름을 입력하세요 : ")
         sql = """select primaryTitle,startYear from movie join writers on movie.tconst = writers.tconst 
             join person on writers.writer = person.nconst
-            where primaryName='%s' order by startYear;""" % writerName
+            where startYear != 9999 and primaryName = '%s' order by startYear;""" % writerName
         curs.execute(sql)
         row = curs.fetchall()
-        print("[%s가 작가인 영화목록]" % directorName)
+        os.system('cls')
+        print("\n[%s가 작가인 영화목록]" % writerName)
         df = pd.DataFrame(row)
         print(df)
     else:
